@@ -12,9 +12,18 @@ jobs:
     strategy:
       matrix:
         include:
-          - os: macos-11
-            buildname: macOS 10.15
+          # - os: macos-11
+          #   buildname: macOS 10.15
+          #   create_bundle: true
+          #   cmake_configure_preset: macOS-10
+          #   bundle_suffix: ''
+          #   qt_package: "qt@5"
+          - os: macos-12-large
+            buildname: macOS 12 M1
             create_bundle: true
+            bundle_suffix: '-macos-12-m1'
+            cmake_configure_preset: macOS-12-m1
+            qt_package_version: "6"
 
     steps:
       - name: Checkout source code
@@ -37,12 +46,13 @@ jobs:
           HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK: 1
           HOMEBREW_NO_AUTO_UPDATE: 1
           HOMEBREW_NO_INSTALL_CLEANUP: 1
+          COPYQ_QT_PACKAGE_VERSION: '${{ matrix.qt_package_version }}'
         run: '${{github.workspace}}/utils/github/install-macos.sh'
 
       - name: Build with CMake
         uses: lukka/run-cmake@v10
         with:
-          configurePreset: macOS
+          configurePreset: '${{ matrix.cmake_configure_preset }}'
           buildPreset: macOS
 
       - name: Create gnupg directory for tests
@@ -57,5 +67,5 @@ jobs:
         if: matrix.create_bundle
         uses: actions/upload-artifact@v3
         with:
-          name: CopyQ.dmg
+          name: 'CopyQ${{ matrix.bundle_suffix }}.dmg'
           path: '${{runner.workspace}}/build/CopyQ.dmg'

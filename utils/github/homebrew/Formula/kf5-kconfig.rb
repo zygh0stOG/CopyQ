@@ -1,3 +1,5 @@
+$qt_version = ENV["COPYQ_QT_PACKAGE_VERSION"]
+
 class Kf5Kconfig < Formula
   desc "Configuration system"
   homepage "https://www.kde.org"
@@ -10,15 +12,16 @@ class Kf5Kconfig < Formula
 
   depends_on "copyq/kde/extra-cmake-modules" => [:build, :test]
 
-  depends_on "qt@5"
+  depends_on "qt"
 
   def install
     args = std_cmake_args
+    args << "-DQT_MAJOR_VERSION=#{$qt_version}"
     args << "-DBUILD_TESTING=OFF"
     args << "-DBUILD_QCH=OFF"
-    args << "-DKDE_INSTALL_QMLDIR=lib/qt5/qml"
-    args << "-DKDE_INSTALL_PLUGINDIR=lib/qt5/plugins"
-    args << "-DKDE_INSTALL_QTPLUGINDIR=lib/qt5/plugins"
+    args << "-DKDE_INSTALL_QMLDIR=lib/qt#{$qt_version}/qml"
+    args << "-DKDE_INSTALL_PLUGINDIR=lib/qt#{$qt_version}/plugins"
+    args << "-DKDE_INSTALL_QTPLUGINDIR=lib/qt#{$qt_version}/plugins"
 
     args << "-DKCONFIG_USE_GUI=OFF"
     args << "-DKCONFIG_USE_DBUS=OFF"

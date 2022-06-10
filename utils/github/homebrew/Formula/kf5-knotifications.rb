@@ -1,3 +1,5 @@
+$qt_version = ENV["COPYQ_QT_PACKAGE_VERSION"]
+
 class Kf5Knotifications < Formula
   desc "Abstraction for system notifications"
   homepage "https://www.kde.org"
@@ -16,14 +18,25 @@ class Kf5Knotifications < Formula
 
   def install
     args = std_cmake_args
+
+    args << "-DQT_MAJOR_VERSION=#{$qt_version}"
+    args << "-DEXCLUDE_DEPRECATED_BEFORE_AND_AT=5.90.0"
+
     args << "-DBUILD_TESTING=OFF"
     args << "-DBUILD_QCH=OFF"
-    args << "-DKDE_INSTALL_QMLDIR=lib/qt5/qml"
-    args << "-DKDE_INSTALL_PLUGINDIR=lib/qt5/plugins"
-    args << "-DKDE_INSTALL_QTPLUGINDIR=lib/qt5/plugins"
-    # setBadgeLabelText method is deprecated since 5.12
-    args << "-DCMAKE_C_FLAGS_RELEASE=-DNDEBUG -DQT_DISABLE_DEPRECATED_BEFORE=0x050b00"
-    args << "-DCMAKE_CXX_FLAGS_RELEASE=-DNDEBUG -DQT_DISABLE_DEPRECATED_BEFORE=0x050b00"
+    args << "-DKDE_INSTALL_QMLDIR=lib/qt#{$qt_version}/qml"
+    args << "-DKDE_INSTALL_PLUGINDIR=lib/qt#{$qt_version}/plugins"
+    args << "-DKDE_INSTALL_QTPLUGINDIR=lib/qt#{$qt_version}/plugins"
+
+    inreplace "CMakeLists.txt",
+              "find_package(Qt5MacExtras ${REQUIRED_QT_VERSION} REQUIRED NO_MODULE)",
+              ""
+    inreplace "KF5NotificationsConfig.cmake.in",
+              "find_dependency(Qt5MacExtras @REQUIRED_QT_VERSION@)",
+              ""
+    inreplace "src/CMakeLists.txt",
+              'target_link_libraries(KF5Notifications PRIVATE Qt5::MacExtras "-framework Foundation" "-framework AppKit")',
+              ""
 
     mkdir "build" do
       system "cmake", "-G", "Ninja", "..", *args

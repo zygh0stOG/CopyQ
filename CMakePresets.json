@@ -14,7 +14,7 @@
             }
         },
         {
-            "name": "macOS",
+            "name": "macOS-10",
             "generator": "Ninja",
             "binaryDir": "${sourceParentDir}/build",
             "installDir": "${sourceParentDir}/build",
@@ -22,6 +22,22 @@
                 "WITH_TESTS": "TRUE",
                 "CMAKE_PREFIX_PATH": "/usr/local/opt/qt@5/lib/cmake",
                 "CMAKE_OSX_DEPLOYMENT_TARGET": "10.15",
+                "CMAKE_C_COMPILER_LAUNCHER": "ccache",
+                "CMAKE_CXX_COMPILER_LAUNCHER": "ccache",
+                "CMAKE_CXX_FLAGS": "-Wno-deprecated-declarations"
+            }
+        },
+        {
+            "name": "macOS-12-m1",
+            "generator": "Ninja",
+            "binaryDir": "${sourceParentDir}/build",
+            "installDir": "${sourceParentDir}/build",
+            "cacheVariables": {
+                "WITH_QT6": "TRUE",
+                "WITH_TESTS": "TRUE",
+                "CMAKE_PREFIX_PATH": "/usr/local/opt/qt6/lib/cmake",
+                "CMAKE_OSX_DEPLOYMENT_TARGET": "12",
+                "CMAKE_OSX_ARCHITECTURES": "x86_64;arm64",
                 "CMAKE_C_COMPILER_LAUNCHER": "ccache",
                 "CMAKE_CXX_COMPILER_LAUNCHER": "ccache",
                 "CMAKE_CXX_FLAGS": "-Wno-deprecated-declarations"

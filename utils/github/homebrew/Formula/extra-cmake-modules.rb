@@ -1,3 +1,5 @@
+$qt_version = ENV["COPYQ_QT_PACKAGE_VERSION"]
+
 class ExtraCmakeModules < Formula
   desc "Extra modules and scripts for CMake"
   homepage "https://api.kde.org/frameworks/extra-cmake-modules/html/index.html"
@@ -9,10 +11,12 @@ class ExtraCmakeModules < Formula
   depends_on "cmake" => [:build, :test]
   depends_on "ninja" => :build
 
-  depends_on "qt@5" => :build
+  depends_on "qt" => :build
 
   def install
     args = std_cmake_args
+    args << "-DQT_MAJOR_VERSION=#{$qt_version}"
+    args << "-DQT_DEFAULT_MAJOR_VERSION=#{$qt_version}"
     args << "-DBUILD_HTML_DOCS=OFF"
     args << "-DBUILD_MAN_DOCS=OFF"
     args << "-DBUILD_QTHELP_DOCS=OFF"
