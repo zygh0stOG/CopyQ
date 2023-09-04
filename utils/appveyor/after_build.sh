@@ -42,10 +42,7 @@ cp -v "$OPENSSL_PATH/$LIBSSL" "$Destination"
 
 "$QTDIR/bin/windeployqt" --help
 "$QTDIR/bin/windeployqt" \
-    --no-system-d3d-compiler \
-    --no-angle \
-    --no-opengl-sw \
-    --no-quick \
+    $WINDEPLOYQT_ARGS \
     "${kf5_libraries[@]}" \
     "$Executable"
 
