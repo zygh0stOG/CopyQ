@@ -23,6 +23,7 @@
 #include "gui/notificationbutton.h"
 #include "gui/notificationdaemon.h"
 #include "item/itemfactory.h"
+#include "item/itemstore.h"
 #include "item/serialize.h"
 #include "scriptable/scriptableproxy.h"
 
@@ -182,6 +183,8 @@ ClipboardServer::ClipboardServer(QApplication *app, const QString &sessionName)
         m_actionDataToSend.clear();
     });
 
+    initSingleShotTimer(&m_timerCleanItemFiles, 120000, this, &ClipboardServer::cleanDataFiles);
+
     initSingleShotTimer(&m_updateThemeTimer, 1000, this, [this](){
         AppConfig appConfig;
         loadSettings(&appConfig);
@@ -292,6 +295,7 @@ void ClipboardServer::onAboutToQuit()
     terminateClients(5000);
 
     m_wnd->saveTabs();
+    cleanDataFiles();
 }
 
 void ClipboardServer::onCommitData(QSessionManager &sessionManager)
@@ -460,6 +464,12 @@ void ClipboardServer::sendActionData(int actionId, const QByteArray &bytes)
         m_actionDataToSend[actionId] = bytes;
         m_timerClearUnsentActionData.start();
     }
+}
+
+void ClipboardServer::cleanDataFiles()
+{
+    COPYQ_LOG("Cleaning unused item files");
+    ::cleanDataFiles( m_wnd->tabs() );
 }
 
 void ClipboardServer::onClientNewConnection(const ClientSocketPtr &client)
@@ -632,6 +642,7 @@ bool ClipboardServer::eventFilter(QObject *object, QEvent *ev)
         if (state != Qt::ApplicationActive) {
             COPYQ_LOG( QStringLiteral("Saving items on application state change (%1)").arg(state) );
             m_wnd->saveTabs();
+            m_timerCleanItemFiles.start();
         }
     } else if (type == QEvent::ThemeChange) {
         if ( !m_updateThemeTimer.isActive() )

@@ -292,6 +292,8 @@ private slots:
 
     void avoidStoringPasswords();
 
+    void saveLargeItem();
+
 private:
     void clearServerErrors();
     int run(const QStringList &arguments, QByteArray *stdoutData = nullptr,
