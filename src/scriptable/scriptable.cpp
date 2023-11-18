@@ -46,7 +46,6 @@
 #include <QSysInfo>
 #include <QUrl>
 #include <QVector>
-#include <QStandardPaths>
 #include <QThread>
 #include <QTimer>
 
@@ -1740,7 +1739,7 @@ QJSValue Scriptable::info()
     info.insert("config", QSettings().fileName());
     info.insert("exe", QCoreApplication::applicationFilePath());
     info.insert("log", logFileName());
-    info.insert("data", QStandardPaths::writableLocation(QStandardPaths::AppDataLocation));
+    info.insert("data", itemDataPath());
 
     info.insert("plugins",
 #ifdef COPYQ_PLUGIN_PREFIX
