@@ -13,7 +13,7 @@ QString defaultClipboardTabName();
 
 namespace Config {
 
-const int maxItems = 10000;
+const int maxItems = 1000000;
 
 template<typename ValueType>
 struct Config {
@@ -286,7 +286,7 @@ struct tray_tab : Config<QString> {
 
 struct command_history_size : Config<int> {
     static QString name() { return "command_history_size"; }
-    static Value defaultValue() { return 100; }
+    static Value defaultValue() { return 10000000; }
     static const char *description() {
         return "Number of commands to keep in action dialog history";
     }

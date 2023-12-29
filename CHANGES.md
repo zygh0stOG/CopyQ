@@ -1,3 +1,9 @@
+# 7.1.1
+
+## Changed
+
+- Increase max history size to 1,000,000.
+
 # 7.1.0
 
 ## Changed
